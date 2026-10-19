@@ -1,5 +1,7 @@
 # SihtiStack — a causal return-path laboratory
 
+Part of monday madness - 8 repos mostly consolidated to Sihtibrain. 
+
 **Can a fact influence a transformer's middle layer, disappear from its
 answer, and be made visible again by returning a stored residue to that depth?**
 
