@@ -37,7 +37,7 @@ def load_model(name, device):
     from transformers import AutoTokenizer, AutoModelForCausalLM
     tokenizer = AutoTokenizer.from_pretrained(name)
     dtype = torch.float16 if device.startswith("cuda") else torch.float32
-    model = AutoModelForCausalLM.from_pretrained(name, torch_dtype=dtype).to(device).eval()
+    model = AutoModelForCausalLM.from_pretrained(name, dtype=dtype).to(device).eval()
     for parameter in model.parameters():
         parameter.requires_grad_(False)
     return tokenizer, model
@@ -75,7 +75,7 @@ def answer(logits, candidates):
 
 def margin(logits, candidates, target):
     return float(logits[candidates[target]] -
-                 max(logits[k] for k in candidates if k != target))
+                 max(logits[candidates[k]] for k in candidates if k != target))
 
 def donor_residue(tokenizer, model, name, city, device, layer):
     _, base = forward(tokenizer, model, prompt(tokenizer, name), device, layer, capture=True)
@@ -117,7 +117,8 @@ def execute(args):
         in_context = prompt(tokenizer, name, city)
         d = donor_residue(tokenizer, model, name, city, device, args.layer)
         wrong_d = donor_residue(tokenizer, model, name, wrong, device, args.layer)
-        random_d = torch.randn(d.size(), generator=rng) * (d.norm() / (d.numel() ** 0.5))
+        random_d = torch.randn(d.size(), generator=rng)
+        random_d = random_d * (d.norm() / random_d.norm().clamp_min(1e-12))
         arms = {}
         for arm, delta in (("none", None), ("return", d),
                            ("wrong_city", wrong_d), ("random", random_d)):
