@@ -99,8 +99,9 @@ and oracle sensitivity first.
 
 - **PASS:** algebra ledger reconstruction and demonstration that
   different histories can share one final state.
-- **PASS:** six local unit tests for telescoping, gradient decomposition,
-  state hooks and safe hook removal.
+- **PASS:** nine local tests for telescoping, gradient decomposition,
+  state hooks, city-token margin indexing, and a synthetic end-to-end
+  five-arm return harness (no downloaded model weights).
 - **UNRUN:** Qwen2.5 pretrained-model memory/return experiment.
 - **UNPROVEN:** multi-hop, automatic native memory addressing, persistent
   synaptic learning or biological gradient descent.
